@@ -18,3 +18,7 @@ commands:
            ne  create bedrock column in northeast corner of region
            se  create bedrock column in southeast corner of region
            sw  create bedrock column in southwest corner of region
+  genregion:
+    aliases: [generateregion, genreg]
+    description: Generates a region in the specified world.
+    usage: /<command> world x z

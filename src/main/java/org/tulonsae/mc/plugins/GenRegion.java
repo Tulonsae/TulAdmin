@@ -7,29 +7,32 @@ import org.bukkit.entity.Player;
 import org.bukkit.World;
 
 /**
- * Creates a void region with optional bedrock border.
+ * Generates a region or series of regions, with an optional bedrock border.
  *
  * @author Tulonsae
  */
-public class VoidRegion implements CommandExecutor {
+public class GenRegion implements CommandExecutor {
+
+    private TulAdmin plugin;
 
     private int chunkSize = 16;
     private int numChunks = 32;
     private int regionSize = numChunks * chunkSize;
 
-    // make these configurable
-    private int height = 130;
-    private int wallHeight = 63;
+    // make this configurable
+    private int height = 63;
+    private int wallHeight = 129;
 
     private Player player = null;
     private World world = null;
 
     /**
-     * Construct a void region object.
+     * Generate a region or series of regions.
      *
      * @param plugin this plugin object
      */
-    public VoidRegion(TulAdmin plugin) {
+    public GenRegion(TulAdmin plugin) {
+        this.plugin = plugin;
     }
 
     /**
@@ -42,23 +45,28 @@ public class VoidRegion implements CommandExecutor {
      */
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-        // must have x and z defined
-        if (args.length < 2) {
+        // must have world, x, and z defined
+        if (args.length < 3) {
             return false;
         }
 
         // check for console or player
         if (sender instanceof Player) {
             player = (Player) sender;
+            // set default world to be player's world
             world = player.getWorld();
         }
 
-        int xRegion = Integer.parseInt(args[0]);
-        int zRegion = Integer.parseInt(args[1]);
+        String worldName = args[0];
+        int xRegion = Integer.parseInt(args[1]);
+        int zRegion = Integer.parseInt(args[2]);
+
+        world = plugin.getServer().getWorld(worldName);
 
         int xChunk = xRegion * numChunks;
         int zChunk = zRegion * numChunks;
 
+/*
         int pos = 0;
         int xPos = 0;
         int zPos = 0;
@@ -100,8 +108,9 @@ public class VoidRegion implements CommandExecutor {
                 return false;
             }
         }
+*/
 
-        sendMessages(sender, "Starting to make void region " + xRegion + "," + zRegion);
+        sendMessages(sender, "Starting to generate region " + xRegion + "," + zRegion + " for world " + worldName);
 
         for (int xc = xChunk; xc < (xChunk + numChunks); xc++) {
             for (int zc = zChunk; zc < (zChunk + numChunks); zc++) {
@@ -109,17 +118,11 @@ public class VoidRegion implements CommandExecutor {
                 sender.sendMessage("Chunk " + xc + "," + zc);
                 int xBlock = xc * chunkSize;
                 int zBlock = zc * chunkSize;
-
-                for (int x = xBlock; x < (xBlock + chunkSize); x++) {
-                    for (int z = zBlock; z < (zBlock + chunkSize); z++) {
-                        for (int y = 0; y < height; y++) {
-                            world.getBlockAt(x, y, z).setTypeId(0);;
-                        }
-                    }
-                }
+                world.getBlockAt(xBlock, height, zBlock);
             }
         }
 
+/*
         if (horizontal || vertical || corner) {
             sendMessages(sender, "Making border on " + args[2] + " side.");
 
@@ -153,8 +156,9 @@ public class VoidRegion implements CommandExecutor {
                 }
             }
         }
+*/
 
-        sendMessages(sender, "Finished making void region " + xRegion + "," + zRegion);
+        sendMessages(sender, "Finished generating region " + xRegion + "," + zRegion + " for world " + worldName);
         return true;
     }
 
@@ -167,7 +171,7 @@ public class VoidRegion implements CommandExecutor {
     private void sendMessages(CommandSender sender, String message) {
         // if a player, then make sure to log it
         if (player != null) {
-            LogUtil.info("Player " + player + "is " + message);
+            LogUtil.info("Player " + player + " is " + message);
         }
 
         // if the console, then it will get this

@@ -30,6 +30,7 @@ public class TulAdmin extends JavaPlugin {
 
         // register commands
         getCommand("makevoidregion").setExecutor(new VoidRegion(this));
+        getCommand("genregion").setExecutor(new GenRegion(this));
         
         // log enable message
         LogUtil.info("version " + version + " enabled.");
@@ -44,12 +45,3 @@ public class TulAdmin extends JavaPlugin {
         LogUtil.info("version " + version + " disabled.");
     }
 }
-
-/*
-        // generate regions
-        if (cmd.getName().equalsIgnoreCase("generateregion")) {
-            if (args.length < 2) {
-                return false;
-            }
-        }
-*/
