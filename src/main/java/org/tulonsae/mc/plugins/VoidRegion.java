@@ -24,11 +24,21 @@ public class VoidRegion implements CommandExecutor {
     private Player player = null;
     private World world = null;
 
+    /**
+     * Construct a void region object.
+     *
+     * @param plugin this plugin object
+     */
     public VoidRegion(TulAdmin plugin) {
     }
 
     /**
      * Called when the command is sent.
+     *
+     * @param sender source of the command
+     * @param cmd command to be executed
+     * @param label command alias
+     * @param args command arguments
      */
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
@@ -91,7 +101,6 @@ public class VoidRegion implements CommandExecutor {
             }
         }
 
-
         sendMessages(sender, "Starting to make void region " + xRegion + "," + zRegion);
 
         for (int xc = xChunk; xc < (xChunk + numChunks); xc++) {
@@ -152,7 +161,8 @@ public class VoidRegion implements CommandExecutor {
     /**
      * Send and log a message.
      *
-     * @param message string message to send.
+     * @param sender source of the command
+     * @param message string message to send/log
      */
     private void sendMessages(CommandSender sender, String message) {
         // if a player, then make sure to log it
