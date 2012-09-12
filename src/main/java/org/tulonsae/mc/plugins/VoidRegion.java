@@ -101,7 +101,7 @@ public class VoidRegion implements CommandExecutor {
             }
         }
 
-        sendMessages(sender, "Starting to make void region " + xRegion + "," + zRegion);
+        Util.sendMessage(sender, "Starting to make void region " + xRegion + "," + zRegion);
 
         for (int xc = xChunk; xc < (xChunk + numChunks); xc++) {
             for (int zc = zChunk; zc < (zChunk + numChunks); zc++) {
@@ -113,7 +113,9 @@ public class VoidRegion implements CommandExecutor {
                 for (int x = xBlock; x < (xBlock + chunkSize); x++) {
                     for (int z = zBlock; z < (zBlock + chunkSize); z++) {
                         for (int y = 0; y < height; y++) {
-                            world.getBlockAt(x, y, z).setTypeId(0);;
+                            if (world.getBlockAt(x, y, z).getTypeId() != 0) {
+                                world.getBlockAt(x, y, z).setTypeId(0);;
+                            }
                         }
                     }
                 }
@@ -121,7 +123,7 @@ public class VoidRegion implements CommandExecutor {
         }
 
         if (horizontal || vertical || corner) {
-            sendMessages(sender, "Making border on " + args[2] + " side.");
+            Util.sendMessage(sender, "Making border on " + args[2] + " side.");
 
             if (horizontal) {
                 int xStart = xChunk * chunkSize;
@@ -154,23 +156,7 @@ public class VoidRegion implements CommandExecutor {
             }
         }
 
-        sendMessages(sender, "Finished making void region " + xRegion + "," + zRegion);
+        Util.sendMessage(sender, "Finished making void region " + xRegion + "," + zRegion);
         return true;
-    }
-
-    /**
-     * Send and log a message.
-     *
-     * @param sender source of the command
-     * @param message string message to send/log
-     */
-    private void sendMessages(CommandSender sender, String message) {
-        // if a player, then make sure to log it
-        if (player != null) {
-            LogUtil.info("Player " + player + "is " + message);
-        }
-
-        // if the console, then it will get this
-        sender.sendMessage(message);
     }
 }

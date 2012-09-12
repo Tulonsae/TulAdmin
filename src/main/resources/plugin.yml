@@ -3,8 +3,8 @@ main: org.tulonsae.mc.plugins.TulAdmin
 version: ${project.version}
 
 commands:
-  makevoidregion:
-    aliases: [mkvoidreg, createvoidregion]
+  voidregion:
+    aliases: [admin-vrg, genvoidregion]
     description: Creates a void region in your current world.
     usage: |
         /<command> x z [ n | s | e | w | nw | ne | se | sw ]
@@ -18,7 +18,13 @@ commands:
            ne  create bedrock column in northeast corner of region
            se  create bedrock column in southeast corner of region
            sw  create bedrock column in southwest corner of region
-  genregion:
-    aliases: [generateregion, genreg]
+  newregion:
+    aliases: [admin-nrg, gennewregion]
     description: Generates a region in the specified world.
     usage: /<command> world x z
+  genborder:
+    aliases: [admin-genborder, makeborder]
+    description: Makes a border for an area in the specified world.
+    usage: |
+        /<command> world x z border
+        where border is n, s, e, w, nw, ne, se, or sw

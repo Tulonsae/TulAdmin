@@ -29,11 +29,15 @@ public class TulAdmin extends JavaPlugin {
         version = this.getDescription().getVersion();
 
         // register commands
-        getCommand("makevoidregion").setExecutor(new VoidRegion(this));
-        getCommand("genregion").setExecutor(new GenRegion(this));
+        getCommand("voidregion").setExecutor(new VoidRegion(this));
+        getCommand("newregion").setExecutor(new NewRegion(this));
+        getCommand("genborder").setExecutor(new GenBorderCommand(this));
         
         // log enable message
-        LogUtil.info("version " + version + " enabled.");
+        Util.logInfo("version " + version + " enabled.");
+
+        // turn on debug - TODO move this to config
+        Util.setDebug(true);
     }
 
     /**
@@ -42,6 +46,6 @@ public class TulAdmin extends JavaPlugin {
     public void onDisable() {
         
         // log disable message
-        LogUtil.info("version " + version + " disabled.");
+        Util.logInfo("version " + version + " disabled.");
     }
 }

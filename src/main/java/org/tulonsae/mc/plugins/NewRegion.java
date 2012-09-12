@@ -11,7 +11,7 @@ import org.bukkit.World;
  *
  * @author Tulonsae
  */
-public class GenRegion implements CommandExecutor {
+public class NewRegion implements CommandExecutor {
 
     private TulAdmin plugin;
 
@@ -31,7 +31,7 @@ public class GenRegion implements CommandExecutor {
      *
      * @param plugin this plugin object
      */
-    public GenRegion(TulAdmin plugin) {
+    public NewRegion(TulAdmin plugin) {
         this.plugin = plugin;
     }
 
@@ -110,7 +110,7 @@ public class GenRegion implements CommandExecutor {
         }
 */
 
-        sendMessages(sender, "Starting to generate region " + xRegion + "," + zRegion + " for world " + worldName);
+        Util.sendMessage(sender, "Starting to generate region " + xRegion + "," + zRegion + " for world " + worldName);
 
         for (int xc = xChunk; xc < (xChunk + numChunks); xc++) {
             for (int zc = zChunk; zc < (zChunk + numChunks); zc++) {
@@ -158,23 +158,7 @@ public class GenRegion implements CommandExecutor {
         }
 */
 
-        sendMessages(sender, "Finished generating region " + xRegion + "," + zRegion + " for world " + worldName);
+        Util.sendMessage(sender, "Finished generating region " + xRegion + "," + zRegion + " for world " + worldName);
         return true;
-    }
-
-    /**
-     * Send and log a message.
-     *
-     * @param sender source of the command
-     * @param message string message to send/log
-     */
-    private void sendMessages(CommandSender sender, String message) {
-        // if a player, then make sure to log it
-        if (player != null) {
-            LogUtil.info("Player " + player + " is " + message);
-        }
-
-        // if the console, then it will get this
-        sender.sendMessage(message);
     }
 }
