@@ -1,7 +1,6 @@
 package org.tulonsae.mc.plugins;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.World;
 
 /**
@@ -12,43 +11,22 @@ import org.bukkit.World;
 public class CommandData {
 
     private TulAdmin plugin;
-    private CommandSender sender;
 
     private static final String optDelim = ":";
     private static final String posDelim = ",";
+    private static final String radDelim = ";";
 
     protected static final int chunkSize = 16;
     protected static final int numChunks = 32;
     protected static final int regionSize = numChunks * chunkSize;
 
-    protected Player player = null;
-    protected World world = null;
+    protected String worldName = null;
 
     // x and z positions
     protected int xPosStart = 0;
     protected int zPosStart = 0;
     protected int xPosEnd = 0;
     protected int zPosEnd = 0;
-
-    protected boolean border = false;
-    // xborder is a east/west border
-    protected boolean xborder = false;
-    // zborder is a north/south border
-    protected boolean zborder = false;
-    // corner is a single column in a corner
-    protected boolean corner = false;
-    // inner is a border just inside the area
-    protected boolean inner = false;
-    // outer is a border just outside the area
-    protected boolean outer = false;
-    // border wall height
-    protected int height = 63;
-    // border wall thickness
-    protected int thickness = 1;
-    // name of border type
-    protected String borderType = "none";
-    // border material type
-    protected int material = 7;
 
     // coordinate refers to a region
     protected boolean region = false;
@@ -64,21 +42,9 @@ public class CommandData {
      * Constructs the command data object.
      *
      * @param plugin this plugin object
-     * @param sender source of the command
      */
-    public CommandData(TulAdmin plugin, CommandSender sender) {
+    public CommandData(TulAdmin plugin) {
         this.plugin = plugin;
-        this.sender = sender;
-
-        // check for console or player
-        if (sender instanceof Player) {
-            player = (Player) sender;
-            // set default world to player's world
-            world = player.getWorld();
-        } else {
-            // set default world to primary world
-            // TODO
-        }
     }
 
     /**
@@ -109,7 +75,7 @@ public class CommandData {
             // the world
             if (option.equals("world") || option.equals("w")) {
                 Util.logDebug("world option = " + value);
-                world = plugin.getServer().getWorld(value);
+                worldName = value;
             }
 
             // a single coordinate
@@ -123,6 +89,30 @@ public class CommandData {
                 zPosStart = pos[1];
                 xPosEnd = xPosStart;
                 zPosEnd = zPosStart;
+            }
+
+            if(option.equals("radius") || option.equals("rad") || option.equals("square") || option.equals("sq")) {
+               Util.logDebug("radius option = " + value);
+               token = value.split(radDelim);
+               int radius = Integer.parseInt(token[0].toLowerCase());
+               if(radius < 0) {
+                  return false;
+               }
+               int xPosCenter = 0;
+               int zPosCenter = 0;
+               if (token.length > 1) {
+                   int[] pos = parsePos(token[1].toLowerCase());
+                   if (pos == null) {
+                       return false;
+                   }
+                   xPosCenter = pos[0];
+                   zPosCenter = pos[1];
+               }
+
+               xPosStart = xPosCenter - radius;
+               zPosStart = zPosCenter - radius;
+               xPosEnd = xPosCenter + radius;
+               zPosEnd = zPosCenter + radius;
             }
 
             // a starting coordinate
@@ -145,63 +135,6 @@ public class CommandData {
                 }
                 xPosEnd = pos[0];
                 zPosEnd = pos[1];
-            }
-
-            // border wall height
-            if (option.equals("height") || option.equals("h")) {
-                height = Integer.parseInt(value);
-            }
-
-            // border wall thickness
-            if (option.equals("thick") || option.equals("thickness") || option.equals("k")) {
-                thickness = Integer.parseInt(value);
-                if (thickness < 1) {
-                    return false;
-                }
-            }
-
-            // border wall material
-            if (option.equals("material") || option.equals("mat") || option.equals("m")) {
-                material = Integer.parseInt(value);
-            }
-
-            // the border type
-            if (option.equals("border") || option.equals("b")) {
-                Util.logDebug("border option = " + value);
-                border = true;
-                if (value.equals("north") || value.equals("n")) {
-                    xborder = true;
-                    borderType = "northern";
-                } else if (value.equals("south") || value.equals("s")) {
-                    xborder = true;
-                    borderType = "southern";
-                } else if (value.equals("east") || value.equals("e")) {
-                    zborder = true;
-                    borderType = "eastern";
-                } else if (value.equals("west") || value.equals("w")) {
-                    zborder = true;
-                    borderType = "western";
-                } else if (value.equals("northwest") || value.equals("nw")) {
-                    corner = true;
-                    borderType = "northwestern";
-                } else if (value.equals("northeast") || value.equals("ne")) {
-                    corner = true;
-                    borderType = "northeastern";
-                } else if (value.equals("southeast") || value.equals("se")) {
-                    corner = true;
-                    borderType = "southeastern";
-                } else if (value.equals("southwest") || value.equals("sw")) {
-                    corner = true;
-                    borderType = "southwestern";
-                } else if (value.equals("inner") || value.equals("inside") || value.equals("i")) {
-                    inner = true;
-                    borderType = "inner";
-                } else if (value.equals("outer") || value.equals("outside") || value.equals("o")) {
-                    outer = true;
-                    borderType = "outer";
-                } else {
-                    return false;
-                }
             }
 
             // the coordinate type
@@ -239,6 +172,11 @@ public class CommandData {
             zPosStart = zPosEnd;
             zPosEnd = temp;
         }
+
+        if (worldName == null) {
+            worldName = "world";
+        }
+        Util.logDebug("world name = " + worldName);
 
         return true;
     }

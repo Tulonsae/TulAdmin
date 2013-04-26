@@ -29,9 +29,7 @@ public class TulAdmin extends JavaPlugin {
         version = this.getDescription().getVersion();
 
         // register commands
-        getCommand("voidregion").setExecutor(new VoidRegion(this));
-        getCommand("newregion").setExecutor(new NewRegion(this));
-        getCommand("genborder").setExecutor(new GenBorderCommand(this));
+        getCommand("genmap").setExecutor(new GenMap(this));
         
         // log enable message
         Util.logInfo("version " + version + " enabled.");
