@@ -4,7 +4,7 @@
 
   <groupId>org.tulonsae.mc.plugins</groupId>
   <artifactId>TulAdmin</artifactId>
-  <version>0.3-dev</version>
+  <version>0.2.1-1.5.1-tina</version>
   <packaging>jar</packaging>
 
   <name>TulAdmin</name>
@@ -26,7 +26,7 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.3.1-R2.0</version>
+      <version>1.5.1-R0.1</version>
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
