@@ -4,7 +4,7 @@
 
   <groupId>org.tulonsae.mc.plugins</groupId>
   <artifactId>TulAdmin</artifactId>
-  <version>0.2.1-1.5.1-tina</version>
+  <version>0.2.1-1.5.2-tina</version>
   <packaging>jar</packaging>
 
   <name>TulAdmin</name>
@@ -26,13 +26,14 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.5.1-R0.1</version>
+      <version>1.5.2-R1.0</version>
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
   </dependencies>
 
   <build>
+    <defaultGoal>clean install</defaultGoal>
     <resources>
       <resource>
         <targetPath>.</targetPath>
