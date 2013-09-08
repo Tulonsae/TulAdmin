@@ -4,9 +4,9 @@ version: ${project.version}
 
 commands:
   genmap:
-    aliases: [newreg]
-    description: Generates a map.
+    aliases:
+    description: Generates a map.  Type defaults to block.
     usage: |
-        /<command> world:worldname [type:region] radius:number[;x,z]
-        /<command> world:worldname [type:region] pos:x,z
-        /<command> world:worldname [type:region] start:x,z end:x,z
+        /<command> world:worldname [type:block|chunk|region] radius:number[;x,z]
+        /<command> world:worldname [type:block|chunk|region] pos:x,z
+        /<command> world:worldname [type:block|chunk|region] start:x,z end:x,z

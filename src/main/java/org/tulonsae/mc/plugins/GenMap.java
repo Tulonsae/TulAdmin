@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.World;
 
 /**
- * Generates a region or series of regions, with an optional bedrock border.
+ * Generates a map area or series of areas.
  *
  * @author Tulonsae
  */
@@ -23,7 +23,7 @@ public class GenMap implements CommandExecutor {
     private World world = null;
 
     /**
-     * Generate a region or series of regions.
+     * Generate a map area.
      *
      * @param plugin this plugin object
      */
@@ -48,12 +48,6 @@ public class GenMap implements CommandExecutor {
         CommandData data = new CommandData(plugin);
         if (!data.parseArgs(args)) {
             return false;
-        } else if (data.chunk) {
-            Util.sendMessage(sender, "Chunk coordinates not implemented yet.");
-            return true;
-        } else if (data.block) {
-            Util.sendMessage(sender, "Block coordinates not implemented yet.");
-            return true;
         }
 
         world = plugin.getServer().getWorld(data.worldName);
@@ -68,7 +62,47 @@ public class GenMap implements CommandExecutor {
 
         Util.sendMessage(sender, "Starting to generate land for world " + data.worldName + " at " + data.coordType + " positions: " + data.xPosStart + "," + data.zPosStart + " thru " + data.xPosEnd + "," + data.zPosEnd);
 
-        if(data.region) {
+        // convert coords to chunks
+        int xStartChunk = 0;
+        int zStartChunk = 0;
+        int xEndChunk = 0;
+        int zEndChunk = 0;
+        if (data.region) {
+            xStartChunk = data.xPosStart * numChunks;
+            zStartChunk = data.zPosStart * numChunks;
+            // staring pos + ending chunk of starting region + number of chunks
+            // in additional regions
+            xEndChunk = xStartChunk + (numChunks - 1) + ((data.xPosEnd - data.xPosStart) * numChunks);
+            zEndChunk = zStartChunk + (numChunks - 1) + ((data.zPosEnd - data.zPosStart) * numChunks);
+        }
+        if (data.block) {
+            xStartChunk = (int) Math.floor(data.xPosStart / chunkSize);
+            zStartChunk = (int) Math.floor(data.zPosStart / chunkSize);
+            xEndChunk = (int) Math.floor(data.xPosEnd / chunkSize);
+            zEndChunk = (int) Math.floor(data.zPosEnd / chunkSize);
+        }
+
+        // generate chunks
+        int saveCnt = 0;
+        int saveAt = regionSize;
+        for (int xc = xStartChunk; xc <= xEndChunk; ++xc) {
+            for (int zc = zStartChunk; zc <= zEndChunk; ++zc) {
+                sender.sendMessage("Chunk " + xc + "," + zc);
+                world.loadChunk(xc, zc);
+                world.unloadChunk(xc, zc);
+                if (++saveCnt < saveAt) {
+                   continue;
+                }
+                Util.sendMessage(sender, "Saving world...");
+                world.save();
+                Util.sendMessage(sender, "      ...done.");
+                saveCnt = 0;
+            }
+        }
+
+        // generate regions
+/*
+        if (data.region) {
            for(int xr = data.xPosStart; xr <= data.xPosEnd; ++xr) {
               for(int zr = data.zPosStart; zr <= data.zPosEnd; ++zr) {
                  sender.sendMessage("Region " + xr + "," + zr);
@@ -88,6 +122,7 @@ public class GenMap implements CommandExecutor {
               }
            }
         }
+*/
 
         Util.sendMessage(sender, "Finished generating land for world " + data.worldName + " at " + data.coordType + " positions: " + data.xPosStart + "," + data.zPosStart + " thru " + data.xPosEnd + "," + data.zPosEnd);
 

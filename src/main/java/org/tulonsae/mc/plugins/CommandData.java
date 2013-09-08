@@ -156,9 +156,9 @@ public class CommandData {
         }
 
         // set default coordinate type
-        if (!chunk && !block) {
-            region = true;
-            coordType = "region";
+        if (!chunk && !region) {
+            block = true;
+            coordType = "block";
         }
 
         // make sure start is upper left and end is lower right
