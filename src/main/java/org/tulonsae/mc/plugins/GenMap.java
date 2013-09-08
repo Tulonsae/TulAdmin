@@ -80,8 +80,6 @@ public class GenMap implements CommandExecutor {
                        sender.sendMessage("Chunk " + xc + "," + zc);
                        world.loadChunk(xc, zc);
                        world.unloadChunk(xc, zc);
-                       //world.getChunkAt(xc, zc);
-                       //world.unloadChunkRequest(xc, zc);
                     }
                  }
                  Util.sendMessage(sender, "Saving world...");
