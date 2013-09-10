@@ -21,6 +21,7 @@ public class GenMap implements CommandExecutor {
 
     private Player player = null;
     private World world = null;
+    private CommandData data = null;
     private int taskId;
     private boolean taskExists = false;
 
@@ -47,7 +48,7 @@ public class GenMap implements CommandExecutor {
             return false;
         }
 
-        CommandData data = new CommandData(plugin);
+        data = new CommandData(plugin);
         if (!data.parseArgs(args)) {
             return false;
         }
@@ -93,65 +94,17 @@ public class GenMap implements CommandExecutor {
         }
         taskExists = true;
 
-/*
-        // generate chunks
-        int saveCnt = 0;
-        int saveAt = regionChunkArea;
-        for (int xc = xStartChunk; xc <= xEndChunk; ++xc) {
-            for (int zc = zStartChunk; zc <= zEndChunk; ++zc) {
-                sender.sendMessage("Chunk " + xc + "," + zc);
-                world.loadChunk(xc, zc);
-                world.unloadChunk(xc, zc);
-                if (++saveCnt < saveAt) {
-                   continue;
-                }
-                Util.sendMessage(sender, "Saving world...");
-                world.save();
-                Util.sendMessage(sender, "      ...done.");
-                saveCnt = 0;
-            }
-        }
-*/
-
-/*
-        // generate regions
-        if (data.region) {
-           for(int xr = data.xPosStart; xr <= data.xPosEnd; ++xr) {
-              for(int zr = data.zPosStart; zr <= data.zPosEnd; ++zr) {
-                 sender.sendMessage("Region " + xr + "," + zr);
-                 int xChunk = xr * numChunks;
-                 int zChunk = zr * numChunks;
-
-                 for(int xc = xChunk; xc < xChunk + numChunks; ++xc) {
-                    for(int zc = zChunk; zc < zChunk + numChunks; ++zc) {
-                       sender.sendMessage("Chunk " + xc + "," + zc);
-                       world.loadChunk(xc, zc);
-                       world.unloadChunk(xc, zc);
-                    }
-                 }
-                 Util.sendMessage(sender, "Saving world...");
-                 world.save();
-                 Util.sendMessage(sender, "      ...done.");
-              }
-           }
-        }
-*/
-
-        Util.sendMessage(sender, "Finished generating land for world " + data.worldName + " at " + data.coordType + " positions: " + data.xPosStart + "," + data.zPosStart + " thru " + data.xPosEnd + "," + data.zPosEnd);
-
-        Util.sendMessage(sender, "Saving world " + data.worldName + "...");
-        world.save();
-        Util.sendMessage(sender, "      ...done.");
-
         return true;
     }
 
     /**
      * Cancels repeating task to generate chunks.
      */
-    void cancelTask() {
+    void cancelTask(CommandSender sender) {
         if (taskExists) {
             plugin.getServer().getScheduler().cancelTask(taskId);
+
+            Util.sendMessage(sender, "Finished generating land for world " + data.worldName + " at " + data.coordType + " positions: " + data.xPosStart + "," + data.zPosStart + " thru " + data.xPosEnd + "," + data.zPosEnd);
         }
     }
 

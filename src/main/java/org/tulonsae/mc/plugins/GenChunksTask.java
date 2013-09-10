@@ -38,6 +38,7 @@ public class GenChunksTask implements Runnable {
 
         xNext = xStart;
         zNext = zStart;
+Util.sendMessage(sender, "Start=" + xStart + "," + zStart + "; End=" + xEnd + "," + zEnd);
     }
 
     /**
@@ -58,7 +59,9 @@ public class GenChunksTask implements Runnable {
                 }
                 zNext++;
             }
-            xNext++;
+            if (zNext > zEnd) {
+                xNext++;
+            }
             if ((cnt >= numChunks) || (xNext > xEnd)) {
                 break;
             }
@@ -70,10 +73,11 @@ public class GenChunksTask implements Runnable {
         Util.sendMessage(sender, "Saving world...");
         world.save();
         Util.sendMessage(sender, "      ...done.");
+Util.sendMessage(sender, "Next=" + xNext + "," + zNext);
 
         // check if we're completely done
         if ((xNext >= xEnd) && (zNext >= zEnd)) {
-            genMap.cancelTask();
+            genMap.cancelTask(sender);
         }
     }
 
