@@ -91,7 +91,7 @@ public class CommandData {
                 zPosEnd = zPosStart;
             }
 
-            if(option.equals("radius") || option.equals("rad") || option.equals("square") || option.equals("sq")) {
+            if(option.equals("radius") || option.equals("rad") || option.equals("square") || option.equals("sq") || option.equals("r")) {
                Util.logDebug("radius option = " + value);
                token = value.split(radDelim);
                int radius = Integer.parseInt(token[0].toLowerCase());

@@ -15,12 +15,14 @@ public class GenMap implements CommandExecutor {
 
     private TulAdmin plugin;
 
-    private int chunkSize = 16;
-    private int numChunks = 32;
-    private int regionSize = numChunks * chunkSize;
+    private static int chunkSize = 16;
+    private static int numChunks = 32;
+    private static int areaSize = 512;
 
     private Player player = null;
     private World world = null;
+    private int taskId;
+    private boolean taskExists = false;
 
     /**
      * Generate a map area.
@@ -82,9 +84,19 @@ public class GenMap implements CommandExecutor {
             zEndChunk = (int) Math.floor(data.zPosEnd / chunkSize);
         }
 
+        // schedule bukkit tasks to generate chunks
+        GenChunksTask genChunksTask = new GenChunksTask(this, sender, world, xStartChunk, zStartChunk, xEndChunk, zEndChunk, areaSize);
+        taskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, genChunksTask, 10L, 10L);
+        if (taskId == -1) {
+            Util.sendMessage(sender, "Could not schedule Bukkit task to generate chunks.");
+            return true;
+        }
+        taskExists = true;
+
+/*
         // generate chunks
         int saveCnt = 0;
-        int saveAt = regionSize;
+        int saveAt = regionChunkArea;
         for (int xc = xStartChunk; xc <= xEndChunk; ++xc) {
             for (int zc = zStartChunk; zc <= zEndChunk; ++zc) {
                 sender.sendMessage("Chunk " + xc + "," + zc);
@@ -99,9 +111,10 @@ public class GenMap implements CommandExecutor {
                 saveCnt = 0;
             }
         }
+*/
 
-        // generate regions
 /*
+        // generate regions
         if (data.region) {
            for(int xr = data.xPosStart; xr <= data.xPosEnd; ++xr) {
               for(int zr = data.zPosStart; zr <= data.zPosEnd; ++zr) {
@@ -131,6 +144,15 @@ public class GenMap implements CommandExecutor {
         Util.sendMessage(sender, "      ...done.");
 
         return true;
+    }
+
+    /**
+     * Cancels repeating task to generate chunks.
+     */
+    void cancelTask() {
+        if (taskExists) {
+            plugin.getServer().getScheduler().cancelTask(taskId);
+        }
     }
 
 }
